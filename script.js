@@ -4,6 +4,7 @@ let voices = [];
 function populateVoiceList() {
     voices = speechSynthesis.getVoices();
     const voiceSelect = document.getElementById('voiceSelect');
+    voiceSelect.innerHTML = ''; // Clear existing options
 
     voices.forEach((voice, i) => {
         const option = document.createElement('option');
