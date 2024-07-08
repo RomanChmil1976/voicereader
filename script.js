@@ -1,5 +1,6 @@
 let audioBlob;
 let voices = [];
+let utterance;
 
 function populateVoiceList() {
     voices = speechSynthesis.getVoices();
@@ -9,7 +10,7 @@ function populateVoiceList() {
     voices.forEach((voice, i) => {
         const option = document.createElement('option');
         option.value = i;
-        option.textContent = `${voice.name} (${voice.lang}) [${voice.gender || 'Unknown gender'}]`;
+        option.textContent = `${voice.name} (${voice.lang})`;
         voiceSelect.appendChild(option);
     });
 }
@@ -21,8 +22,8 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
 
 function speakText() {
     const text = document.getElementById('text').value;
-    const speechSynthesis = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(text);
+    speechSynthesis.cancel(); // Cancel any ongoing speech
+    utterance = new SpeechSynthesisUtterance(text);
     const voiceSelect = document.getElementById('voiceSelect');
     const selectedVoice = voices[voiceSelect.value];
 
@@ -57,6 +58,12 @@ function speakText() {
     };
 
     speechSynthesis.speak(utterance);
+}
+
+function stopSpeaking() {
+    if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+    }
 }
 
 function saveAudio() {
