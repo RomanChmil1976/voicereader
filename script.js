@@ -1,11 +1,33 @@
 let audioBlob;
+let voices = [];
+
+function populateVoiceList() {
+    voices = speechSynthesis.getVoices();
+    const voiceSelect = document.getElementById('voiceSelect');
+
+    voices.forEach((voice, i) => {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `${voice.name} (${voice.lang}) [${voice.gender || 'Unknown gender'}]`;
+        voiceSelect.appendChild(option);
+    });
+}
+
+populateVoiceList();
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = populateVoiceList;
+}
 
 function speakText() {
     const text = document.getElementById('text').value;
     const speechSynthesis = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(text);
+    const voiceSelect = document.getElementById('voiceSelect');
+    const selectedVoice = voices[voiceSelect.value];
 
-    utterance.lang = 'en-US';
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+    }
 
     const audioContext = new AudioContext();
     const mediaStreamDestination = audioContext.createMediaStreamDestination();
