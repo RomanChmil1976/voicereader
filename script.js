@@ -5,6 +5,7 @@ let recorder;
 let audioContext;
 let mediaStreamDestination;
 let chunks = [];
+let source;
 
 function populateVoiceList() {
     voices = speechSynthesis.getVoices();
@@ -38,11 +39,10 @@ function speakText() {
     // Create audio context and destination
     audioContext = new AudioContext();
     mediaStreamDestination = audioContext.createMediaStreamDestination();
-    
-    // Create an oscillator to use as input to the destination
-    const oscillator = audioContext.createOscillator();
-    oscillator.connect(mediaStreamDestination);
-    oscillator.start();
+
+    // Connect speech synthesis to audio context
+    source = audioContext.createMediaStreamSource(mediaStreamDestination.stream);
+    source.connect(audioContext.destination);
 
     recorder = new MediaRecorder(mediaStreamDestination.stream);
     chunks = [];
