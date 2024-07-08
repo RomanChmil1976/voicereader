@@ -37,10 +37,9 @@ function speakText() {
 
     audioContext = new AudioContext();
     mediaStreamDestination = audioContext.createMediaStreamDestination();
-
-    const source = audioContext.createMediaStreamSource(utterance);
-    source.connect(mediaStreamDestination);
-    source.connect(audioContext.destination);
+    const mediaElementSource = audioContext.createMediaElementSource(new Audio());
+    mediaElementSource.connect(mediaStreamDestination);
+    mediaElementSource.connect(audioContext.destination);
 
     recorder = new MediaRecorder(mediaStreamDestination.stream);
     chunks = [];
