@@ -67,9 +67,9 @@ function stopSpeaking() {
 }
 
 function clearText() {
+    stopSpeaking();
     const textArea = document.getElementById('text');
     textArea.value = '';
-    stopSpeaking();
 }
 
 function saveAudio() {
@@ -86,3 +86,8 @@ function saveAudio() {
         alert('Please speak the text first.');
     }
 }
+
+// Add event listeners to buttons
+document.getElementById('speakButton').addEventListener('click', speakText);
+document.getElementById('stopButton').addEventListener('click', stopSpeaking);
+document.getElementById('clearButton').addEventListener('click', clearText);
