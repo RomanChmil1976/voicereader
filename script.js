@@ -38,7 +38,7 @@ function speakText() {
     audioContext = new AudioContext();
     mediaStreamDestination = audioContext.createMediaStreamDestination();
 
-    const source = audioContext.createMediaElementSource(new Audio());
+    const source = audioContext.createMediaStreamSource(utterance);
     source.connect(mediaStreamDestination);
     source.connect(audioContext.destination);
 
