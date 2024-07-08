@@ -8,15 +8,14 @@
 </head>
 <body>
     <h1>Voice Reader</h1>
-    <div class="spacer"></div>
-    <label for="voiceSelect">Choose Voice:</label>
-    <select id="voiceSelect"></select>
-    <textarea id="text" rows="10">Hello! How are you today? This is a test of text-to-speech functionality.</textarea>
-    <div class="button-group">
+    <div class="button-container">
         <button onclick="speakText()">Speak</button>
         <button onclick="stopSpeaking()">Stop</button>
         <button onclick="clearText()">Clear</button>
     </div>
+    <label for="voiceSelect">Choose Voice:</label>
+    <select id="voiceSelect"></select>
+    <textarea id="text" rows="10">Hello! How are you today? This is a test of text-to-speech functionality.</textarea>
     <button onclick="saveAudio()">Save as MP3</button>
 
     <script src="script.js"></script>
