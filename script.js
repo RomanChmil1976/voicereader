@@ -66,6 +66,11 @@ function stopSpeaking() {
     }
 }
 
+function clearText() {
+    document.getElementById('text').value = '';
+    stopSpeaking();
+}
+
 function saveAudio() {
     if (audioBlob) {
         const url = URL.createObjectURL(audioBlob);
