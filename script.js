@@ -1,6 +1,10 @@
 let audioBlob;
 let voices = [];
 let utterance;
+let recorder;
+let audioContext;
+let mediaStreamDestination;
+let chunks = [];
 
 function populateVoiceList() {
     voices = speechSynthesis.getVoices();
@@ -31,14 +35,15 @@ function speakText() {
         utterance.voice = selectedVoice;
     }
 
-    const audioContext = new AudioContext();
-    const mediaStreamDestination = audioContext.createMediaStreamDestination();
+    audioContext = new AudioContext();
+    mediaStreamDestination = audioContext.createMediaStreamDestination();
+
     const source = audioContext.createMediaElementSource(new Audio());
     source.connect(mediaStreamDestination);
     source.connect(audioContext.destination);
 
-    const recorder = new MediaRecorder(mediaStreamDestination.stream);
-    let chunks = [];
+    recorder = new MediaRecorder(mediaStreamDestination.stream);
+    chunks = [];
 
     recorder.ondataavailable = function(event) {
         chunks.push(event.data);
@@ -63,6 +68,9 @@ function speakText() {
 function stopSpeaking() {
     if (speechSynthesis.speaking) {
         speechSynthesis.cancel();
+    }
+    if (recorder && recorder.state === "recording") {
+        recorder.stop();
     }
 }
 
