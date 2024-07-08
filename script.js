@@ -67,7 +67,8 @@ function stopSpeaking() {
 }
 
 function clearText() {
-    document.getElementById('text').value = '';
+    const textArea = document.getElementById('text');
+    textArea.value = '';
     stopSpeaking();
 }
 
