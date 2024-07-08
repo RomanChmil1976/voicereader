@@ -35,11 +35,14 @@ function speakText() {
         utterance.voice = selectedVoice;
     }
 
+    // Create audio context and destination
     audioContext = new AudioContext();
     mediaStreamDestination = audioContext.createMediaStreamDestination();
-    const mediaElementSource = audioContext.createMediaElementSource(new Audio());
-    mediaElementSource.connect(mediaStreamDestination);
-    mediaElementSource.connect(audioContext.destination);
+    
+    // Create an oscillator to use as input to the destination
+    const oscillator = audioContext.createOscillator();
+    oscillator.connect(mediaStreamDestination);
+    oscillator.start();
 
     recorder = new MediaRecorder(mediaStreamDestination.stream);
     chunks = [];
