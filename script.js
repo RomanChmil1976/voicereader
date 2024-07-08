@@ -7,29 +7,33 @@ function speakText() {
 
     utterance.lang = 'en-US';
 
-    const mediaStream = new MediaStream();
     const audioContext = new AudioContext();
     const mediaStreamDestination = audioContext.createMediaStreamDestination();
+    const source = audioContext.createMediaElementSource(new Audio());
+    source.connect(mediaStreamDestination);
+    source.connect(audioContext.destination);
+
+    const recorder = new MediaRecorder(mediaStreamDestination.stream);
+    let chunks = [];
+
+    recorder.ondataavailable = function(event) {
+        chunks.push(event.data);
+    };
+
+    recorder.onstop = function() {
+        audioBlob = new Blob(chunks, { type: 'audio/mp3' });
+        chunks = [];
+    };
 
     utterance.onstart = function() {
-        const audioInput = audioContext.createMediaElementSource(speechSynthesis.speak(utterance));
-        audioInput.connect(mediaStreamDestination);
-        audioInput.connect(audioContext.destination);
-        mediaStream.addTrack(mediaStreamDestination.stream.getAudioTracks()[0]);
-
-        const recorder = new RecordRTC(mediaStream, {
-            type: 'audio',
-            mimeType: 'audio/mp3'
-        });
-
-        recorder.startRecording();
-
-        utterance.onend = function() {
-            recorder.stopRecording(function() {
-                audioBlob = recorder.getBlob();
-            });
-        };
+        recorder.start();
     };
+
+    utterance.onend = function() {
+        recorder.stop();
+    };
+
+    speechSynthesis.speak(utterance);
 }
 
 function saveAudio() {
