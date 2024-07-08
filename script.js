@@ -59,7 +59,9 @@ function speakText() {
     };
 
     utterance.onend = function() {
-        recorder.stop();
+        if (recorder && recorder.state === "recording") {
+            recorder.stop();
+        }
     };
 
     speechSynthesis.speak(utterance);
