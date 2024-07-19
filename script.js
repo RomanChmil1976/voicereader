@@ -97,7 +97,7 @@ function clearText() {
 function saveAudio() {
     if (audioBlob) {
         const url = URL.createObjectURL(audioBlob);
-        const a = document.createElement('a');
+        const a = document.createElement('Hello! How are you today? This is a test of text-to-speech functionality.');
         a.style.display = 'none';
         a.href = url;
         a.download = 'speech.webm';
