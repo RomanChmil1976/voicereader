@@ -38,10 +38,25 @@ function speakText() {
     // Create audio context and destination
     audioContext = new AudioContext();
     mediaStreamDestination = audioContext.createMediaStreamDestination();
+    const source = audioContext.createMediaElementSource(new Audio());
 
-    // Connect speech synthesis to audio context
-    const source = audioContext.createMediaStreamSource(mediaStreamDestination.stream);
-    source.connect(audioContext.destination);
+    const scriptNode = audioContext.createScriptProcessor(4096, 1, 1);
+    scriptNode.onaudioprocess = function(audioProcessingEvent) {
+        const inputBuffer = audioProcessingEvent.inputBuffer;
+        const outputBuffer = audioProcessingEvent.outputBuffer;
+
+        for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+            const inputData = inputBuffer.getChannelData(channel);
+            const outputData = outputBuffer.getChannelData(channel);
+
+            for (let sample = 0; sample < inputBuffer.length; sample++) {
+                outputData[sample] = inputData[sample];
+            }
+        }
+    };
+
+    source.connect(scriptNode);
+    scriptNode.connect(mediaStreamDestination);
 
     recorder = new MediaRecorder(mediaStreamDestination.stream);
     chunks = [];
