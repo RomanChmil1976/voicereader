@@ -38,13 +38,16 @@ function speakText() {
     // Create audio context and destination
     audioContext = new AudioContext();
     mediaStreamDestination = audioContext.createMediaStreamDestination();
-    const oscillator = audioContext.createOscillator();
+
+    // Create a gain node
+    const gainNode = audioContext.createGain();
 
     // Connect speech synthesis to audio context
-    const source = audioContext.createMediaStreamSource(utterance);
-    source.connect(mediaStreamDestination);
-    source.connect(audioContext.destination);
+    const sourceNode = audioContext.createMediaStreamSource(mediaStreamDestination.stream);
+    sourceNode.connect(gainNode);
+    gainNode.connect(audioContext.destination);
 
+    // Create MediaRecorder to record the audio
     recorder = new MediaRecorder(mediaStreamDestination.stream);
     chunks = [];
 
