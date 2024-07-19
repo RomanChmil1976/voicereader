@@ -35,28 +35,11 @@ function speakText() {
         utterance.voice = selectedVoice;
     }
 
-    // Create audio context and destination
     audioContext = new AudioContext();
     mediaStreamDestination = audioContext.createMediaStreamDestination();
-    const source = audioContext.createMediaElementSource(new Audio());
 
-    const scriptNode = audioContext.createScriptProcessor(4096, 1, 1);
-    scriptNode.onaudioprocess = function(audioProcessingEvent) {
-        const inputBuffer = audioProcessingEvent.inputBuffer;
-        const outputBuffer = audioProcessingEvent.outputBuffer;
-
-        for (let channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
-            const inputData = inputBuffer.getChannelData(channel);
-            const outputData = outputBuffer.getChannelData(channel);
-
-            for (let sample = 0; sample < inputBuffer.length; sample++) {
-                outputData[sample] = inputData[sample];
-            }
-        }
-    };
-
-    source.connect(scriptNode);
-    scriptNode.connect(mediaStreamDestination);
+    const sourceNode = audioContext.createMediaStreamSource(mediaStreamDestination.stream);
+    sourceNode.connect(audioContext.destination);
 
     recorder = new MediaRecorder(mediaStreamDestination.stream);
     chunks = [];
@@ -66,7 +49,7 @@ function speakText() {
     };
 
     recorder.onstop = function() {
-        audioBlob = new Blob(chunks, { type: 'audio/mp3' });
+        audioBlob = new Blob(chunks, { type: 'audio/webm' });
         chunks = [];
     };
 
@@ -104,7 +87,7 @@ function saveAudio() {
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = 'speech.mp3';
+        a.download = 'speech.webm';
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
