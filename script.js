@@ -32,9 +32,13 @@ function speakText() {
         utterance.voice = selectedVoice;
     }
 
+    const volumeControl = document.getElementById('volumeControl');
+    utterance.volume = volumeControl.value;
+
+    console.log(`Speaking text: "${text}" with volume: ${utterance.volume}`);
+
     const audioContext = new AudioContext();
     const mediaStreamDestination = audioContext.createMediaStreamDestination();
-
     const sourceNode = audioContext.createMediaStreamSource(mediaStreamDestination.stream);
     sourceNode.connect(audioContext.destination);
 
@@ -47,16 +51,19 @@ function speakText() {
 
     recorder.onstop = function() {
         audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        console.log("Recording stopped. Blob size: ", audioBlob.size);
         chunks = [];
     };
 
     utterance.onstart = function() {
         recorder.start();
+        console.log("Recording started");
     };
 
     utterance.onend = function() {
         if (recorder && recorder.state === "recording") {
             recorder.stop();
+            console.log("Recording stopped");
         }
     };
 
@@ -66,9 +73,11 @@ function speakText() {
 function stopSpeaking() {
     if (speechSynthesis.speaking) {
         speechSynthesis.cancel();
+        console.log("Speech synthesis cancelled");
     }
     if (recorder && recorder.state === "recording") {
         recorder.stop();
+        console.log("Recording stopped manually");
     }
 }
 
@@ -76,6 +85,7 @@ function clearText() {
     stopSpeaking();
     const textArea = document.getElementById('text');
     textArea.value = '';
+    console.log("Text cleared");
 }
 
 function saveAudio() {
@@ -88,12 +98,14 @@ function saveAudio() {
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
+        console.log("Audio saved");
     } else {
         alert('Please speak the text first.');
+        console.log("No audio to save");
     }
 }
 
-// Add event listeners to buttons 12345
+// Add event listeners to buttons
 document.getElementById('speakButton').addEventListener('click', speakText);
 document.getElementById('stopButton').addEventListener('click', stopSpeaking);
 document.getElementById('clearButton').addEventListener('click', clearText);
