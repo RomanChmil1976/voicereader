@@ -1,9 +1,6 @@
 let audioBlob;
 let voices = [];
-let utterance;
 let recorder;
-let audioContext;
-let mediaStreamDestination;
 let chunks = [];
 
 function populateVoiceList() {
@@ -27,27 +24,20 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
 function speakText() {
     const text = document.getElementById('text').value;
     speechSynthesis.cancel(); // Cancel any ongoing speech
-    utterance = new SpeechSynthesisUtterance(text);
+
+    const utterance = new SpeechSynthesisUtterance(text);
     const voiceSelect = document.getElementById('voiceSelect');
     const selectedVoice = voices[voiceSelect.value];
-
     if (selectedVoice) {
         utterance.voice = selectedVoice;
     }
 
-    // Create audio context and destination
-    audioContext = new AudioContext();
-    mediaStreamDestination = audioContext.createMediaStreamDestination();
+    const audioContext = new AudioContext();
+    const mediaStreamDestination = audioContext.createMediaStreamDestination();
 
-    // Create a gain node
-    const gainNode = audioContext.createGain();
-
-    // Connect speech synthesis to audio context
     const sourceNode = audioContext.createMediaStreamSource(mediaStreamDestination.stream);
-    sourceNode.connect(gainNode);
-    gainNode.connect(audioContext.destination);
+    sourceNode.connect(audioContext.destination);
 
-    // Create MediaRecorder to record the audio
     recorder = new MediaRecorder(mediaStreamDestination.stream);
     chunks = [];
 
@@ -103,7 +93,7 @@ function saveAudio() {
     }
 }
 
-// Add event listeners to buttons
+// Add event listeners to buttons 12345
 document.getElementById('speakButton').addEventListener('click', speakText);
 document.getElementById('stopButton').addEventListener('click', stopSpeaking);
 document.getElementById('clearButton').addEventListener('click', clearText);
